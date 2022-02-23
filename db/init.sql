@@ -1,4 +1,5 @@
 CREATE DATABASE prescription_db;
+\connect prescription_db
 
 CREATE TABLE IF NOT EXISTS login_info(
    id SERIAL PRIMARY KEY,
