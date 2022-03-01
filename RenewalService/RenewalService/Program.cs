@@ -8,7 +8,8 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddSingleton<IRenewalService>(new RestSharpRenewalService(builder.Configuration["PrescriptionEndpoint"], builder.Configuration["NotificationEndpoint"]));
+IConfiguration conf = builder.Configuration;
+builder.Services.AddSingleton<IRenewalService, RestSharpRenewalService>(new RestSharpRenewalService(builder.Configuration["PrescriptionEndpoint"], builder.Configuration["NotificationEndpoint"]));
 builder.Services.AddCronJob<RenewalJob>( renewal =>
 {
     renewal.CronExpression = @"*/15 * * * *";

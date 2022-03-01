@@ -7,15 +7,19 @@ namespace RenewalService
     {
         private string _prescriptionServiceEndpoint;
         private string _notificationServiceEndpoint;
+        private ILogger<RestSharpRenewalService> _logger;
 
-        public RestSharpRenewalService(string prescriptionServiceEndpoint, string notificationServiceEndpoint)
+        public RestSharpRenewalService(IConfiguration config, ILogger<RestSharpRenewalService> logger)
         {
-            _prescriptionServiceEndpoint = prescriptionServiceEndpoint;
-            _notificationServiceEndpoint = notificationServiceEndpoint;
+            _prescriptionServiceEndpoint = config["PrescriptionEndpoint"] ?? throw new ArgumentNullException("PrescriptionEndpoint");
+            _notificationServiceEndpoint = config["NotificationEndpoint"] ?? throw new ArgumentNullException("NotificationEndpoint");
+            _logger = logger;
+            _logger.LogInformation($"RenewalService instantiated with endpoints: {_prescriptionServiceEndpoint} {_notificationServiceEndpoint}");
         }
 
         public void NotifyRenewals()
         {
+            _logger.LogInformation($"Notifying about expiring prescriptions");
             CancellationToken cancellationToken = new CancellationToken();
             var prescriptionClient = new RestClient(_prescriptionServiceEndpoint);
             var prescriptionRequest = new RestRequest("Prescription");
@@ -26,6 +30,8 @@ namespace RenewalService
             foreach (var prescription in prescriptionResponse)
             {
                 var email = prescription.Patient.Email;
+
+                _logger.LogInformation($"Sending expiration email to {email}");
                 MailRequestDto mailRequest = new MailRequestDto();
                 mailRequest.ToEmail = email;
                 mailRequest.Subject = "Prescription Expiring";
