@@ -36,9 +36,12 @@ namespace RenewalService
                 mailRequest.ToEmail = email;
                 mailRequest.Subject = "Prescription Expiring";
                 mailRequest.Body = $"Your prescription for {prescription.Medicine.Name} expires {prescription.Expiration}";
-                var notificationRequest = new RestRequest("api/Email").AddBody(mailRequest);
+                var notificationRequest = new RestRequest("api/Email/send").AddBody(mailRequest);
 
                 var response = notificationClient.PostAsync(notificationRequest, cancellationToken).Result;
+
+                if (!response.IsSuccessful)
+                    _logger.LogWarning($"Failed to notify {email}");
 
             }
         }
