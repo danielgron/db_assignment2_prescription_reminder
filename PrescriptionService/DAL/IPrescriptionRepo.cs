@@ -1,4 +1,4 @@
-﻿namespace PresciptionService.DAL
+﻿namespace PrescriptionService.DAL
 {
     public interface IPrescriptionRepo
     {

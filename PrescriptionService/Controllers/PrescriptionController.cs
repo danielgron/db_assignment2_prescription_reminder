@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
-using PresciptionService.DAL;
-using PresciptionService.DTO;
-using PresciptionService.Util;
+using PrescriptionService.DAL;
+using PrescriptionService.DTO;
+using PrescriptionService.Util;
 
-namespace PresciptionService.Controllers;
+namespace PrescriptionService.Controllers;
 
 [ApiController]
 [Route("[controller]")]

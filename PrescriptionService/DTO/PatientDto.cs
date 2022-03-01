@@ -1,4 +1,4 @@
-﻿namespace PresciptionService.DTO
+﻿namespace PrescriptionService.DTO
 {
     public class PatientDto
     {

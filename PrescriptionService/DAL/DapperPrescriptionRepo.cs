@@ -1,7 +1,7 @@
 ﻿using Dapper;
 using Npgsql;
 
-namespace PresciptionService.DAL
+namespace PrescriptionService.DAL
 {
     public class DapperPrescriptionRepo : IPrescriptionRepo
     {

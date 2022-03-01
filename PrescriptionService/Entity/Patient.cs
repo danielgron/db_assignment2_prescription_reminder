@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace PresciptionService
+namespace PrescriptionService
 {
     public partial class Patient
     {

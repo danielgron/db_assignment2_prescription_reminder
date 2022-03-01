@@ -1,6 +1,6 @@
-﻿using PresciptionService.DTO;
+﻿using PrescriptionService.DTO;
 
-namespace PresciptionService.Util
+namespace PrescriptionService.Util
 {
     public class PrescriptionMapper
     {
