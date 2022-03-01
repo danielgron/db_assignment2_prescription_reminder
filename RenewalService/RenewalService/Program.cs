@@ -9,7 +9,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 IConfiguration conf = builder.Configuration;
-builder.Services.AddSingleton<IRenewalService, RestSharpRenewalService>(new RestSharpRenewalService(builder.Configuration["PrescriptionEndpoint"], builder.Configuration["NotificationEndpoint"]));
+builder.Services.AddSingleton<IRenewalService, RestSharpRenewalService>();
 builder.Services.AddCronJob<RenewalJob>( renewal =>
 {
     renewal.CronExpression = @"*/15 * * * *";
