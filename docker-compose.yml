@@ -15,3 +15,39 @@ services:
     environment:
       POSTGRES_USER: prescription_user
       POSTGRES_PASSWORD: prescription_pw
+  
+  prescription-service:
+    container_name: 'prescription-service'
+    build: 
+      context: ./PrescriptionService
+      dockerfile: Dockerfile
+    hostname: prescription-service
+    mem_limit: 300m
+    memswap_limit: 1100m
+    ports:
+      - 14080:80
+    restart: always
+    
+  renewal-service:
+    container_name: 'renewal-service'
+    build: 
+      context: ./RenewalService/RenewalService
+      dockerfile: Dockerfile
+    hostname: renewal-service
+    mem_limit: 300m
+    memswap_limit: 1100m
+    ports:
+      - 14081:80
+    restart: always
+    
+  notification-service:
+    container_name: 'notification-service'
+    build: 
+      context: ./Pharmacy-Assignment2/Pharmacy-Assignment2
+      dockerfile: Dockerfile
+    hostname: notification-service
+    mem_limit: 300m
+    memswap_limit: 1100m
+    ports:
+      - 14082:80
+    restart: always

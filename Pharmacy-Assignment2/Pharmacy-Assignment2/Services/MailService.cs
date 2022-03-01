@@ -1,5 +1,6 @@
 ﻿using MailKit.Net.Smtp;
 using MailKit.Security;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using Pharmacy_Assignment2.Interfaces;
@@ -16,13 +17,16 @@ namespace Pharmacy_Assignment2.Services
     public class MailService : IMailService
     {
         private readonly MailSettings _mailSettings;
+        private readonly ILogger<MailService> _logger;
 
-        public MailService(IOptions<MailSettings> options)
+        public MailService(IOptions<MailSettings> options, ILogger<MailService> logger)
         {
             _mailSettings = options.Value;
+            _logger = logger;
         }
         public async Task SendEmailAsync(MailRequest mailRequest)
         {
+            _logger.LogInformation($"Sending mail to {mailRequest.ToEmail}");
             var email = new MimeMessage();
             email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
             email.To.Add(MailboxAddress.Parse(mailRequest.ToEmail));
@@ -48,10 +52,18 @@ namespace Pharmacy_Assignment2.Services
             builder.HtmlBody = mailRequest.Body;
             email.Body = builder.ToMessageBody();
             using var smtp = new SmtpClient();
-            smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
-            smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
+            if (_mailSettings.DisplayName == "freesmtpservers")
+            {
+                smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.None);
+            }
+            else
+            {
+                smtp.Connect(_mailSettings.Host, _mailSettings.Port, SecureSocketOptions.StartTls);
+                smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
+            }
             await smtp.SendAsync(email);
             smtp.Disconnect(true);
+            _logger.LogInformation($"Done sending mail to {mailRequest.ToEmail}");
         }
     }
 }

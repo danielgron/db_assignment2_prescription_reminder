@@ -22,7 +22,7 @@ namespace Pharmacy_Assignment2.Controllers.Apis
 
 
         [HttpPost("Send")]
-        public async Task<IActionResult> Send([FromForm] MailRequest mailRequest)
+        public async Task<IActionResult> Send([FromBody] MailRequest mailRequest)
         {
             try
             {
@@ -31,7 +31,8 @@ namespace Pharmacy_Assignment2.Controllers.Apis
             }
             catch(Exception ex)
             {
-                throw ex;
+                Console.WriteLine(ex.ToString());
+                throw;
             }
         }
     }
