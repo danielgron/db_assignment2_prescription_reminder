@@ -1,4 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using PresciptionService.DAL;
+using PresciptionService.DTO;
+using PresciptionService.Util;
 
 namespace PresciptionService.Controllers;
 
@@ -8,17 +11,18 @@ public class PrescriptionController : ControllerBase
 {
 
     private readonly ILogger<PrescriptionController> _logger;
-    private readonly PrescriptionContext _prescriptionContext;
+    private readonly IPrescriptionRepo _prescriptionRepo;
 
-    public PrescriptionController(ILogger<PrescriptionController> logger, PrescriptionContext prescriptionContext)
+    public PrescriptionController(ILogger<PrescriptionController> logger, IPrescriptionRepo prescriptionRepo)
     {
         _logger = logger;
-        _prescriptionContext = prescriptionContext;
+        _prescriptionRepo = prescriptionRepo;
     }
 
     [HttpGet(Name = "GetPrescriptions")]
-    public IEnumerable<Prescription> Get()
+    public IEnumerable<PrescriptionDto> Get()
     {
-        return _prescriptionContext.Prescriptions.ToList();
+        var result = _prescriptionRepo.GetPrescriptionsExpiringLatest(DateOnly.FromDateTime(DateTime.Now.AddDays(7))).Select(x => PrescriptionMapper.ToDto(x));
+        return result;
     }
 }

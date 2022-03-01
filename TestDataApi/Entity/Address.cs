@@ -7,6 +7,7 @@ namespace TestDataApi
     {
         public Address()
         {
+            PersonalData = new HashSet<PersonalDatum>();
             Pharmacies = new HashSet<Pharmacy>();
         }
 
@@ -15,6 +16,7 @@ namespace TestDataApi
         public string Streetnumber { get; set; } = null!;
         public string Zipcode { get; set; } = null!;
 
+        public virtual ICollection<PersonalDatum> PersonalData { get; set; }
         public virtual ICollection<Pharmacy> Pharmacies { get; set; }
     }
 }

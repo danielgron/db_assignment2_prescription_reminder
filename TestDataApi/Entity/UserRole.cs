@@ -7,11 +7,14 @@ namespace TestDataApi
     {
         public UserRole()
         {
-            People = new HashSet<Person>();
+            PersonalData = new HashSet<PersonalDatum>();
+            Permissions = new HashSet<UserPermission>();
         }
 
         public int Id { get; set; }
 
-        public virtual ICollection<Person> People { get; set; }
+        public virtual ICollection<PersonalDatum> PersonalData { get; set; }
+
+        public virtual ICollection<UserPermission> Permissions { get; set; }
     }
 }

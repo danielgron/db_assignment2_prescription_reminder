@@ -11,11 +11,10 @@ namespace TestDataApi
         }
 
         public int Id { get; set; }
-        public string FirstName { get; set; } = null!;
-        public string LastName { get; set; } = null!;
-        public int? LoginId { get; set; }
-        public int? RoleId { get; set; }
+        public string Cpr { get; set; } = null!;
+        public int PersonalDataId { get; set; }
 
+        public virtual PersonalDatum PersonalData { get; set; } = null!;
         public virtual ICollection<Prescription> Prescriptions { get; set; }
     }
 }

@@ -6,19 +6,23 @@ namespace TestDataApi.Controllers;
 [Route("[controller]")]
 public class TestDataController : ControllerBase
 {
-
+    
     private readonly ILogger<TestDataController> _logger;
+    private readonly PrescriptionContext _pc;
 
-    public TestDataController(ILogger<TestDataController> logger)
+    public TestDataController(ILogger<TestDataController> logger, PrescriptionContext pc)
     {
         _logger = logger;
+        _pc = pc;
     }
+    
 
     [HttpGet(Name = "SeedTestData")]
     public Task Get()
     {
         
-        DbSeeder.SeedTestData(1000000);
+        new DbSeeder(_pc).SeedTestData(1000000);
         return null;
     }
+    
 }

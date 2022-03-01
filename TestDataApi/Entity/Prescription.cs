@@ -11,9 +11,9 @@ namespace TestDataApi
         public int MedicineId { get; set; }
         public int PrescribedBy { get; set; }
         public int PrescribedTo { get; set; }
-        public int LastAdministeredBy { get; set; }
+        public int? LastAdministeredBy { get; set; }
 
-        public virtual Pharmaceut LastAdministeredByNavigation { get; set; } = null!;
+        public virtual Pharmaceut? LastAdministeredByNavigation { get; set; }
         public virtual Medicine Medicine { get; set; } = null!;
         public virtual Doctor PrescribedByNavigation { get; set; } = null!;
         public virtual Patient PrescribedToNavigation { get; set; } = null!;
