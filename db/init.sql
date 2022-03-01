@@ -36,7 +36,6 @@ CREATE TABLE IF NOT EXISTS personal_data(
    id SERIAL PRIMARY KEY,
    first_name varchar(64) NOT NULL,
    last_name varchar(64) NOT NULL,
-   cpr varchar(10) NOT NULL,
    email VARCHAR(64),
    login_id int UNIQUE,
    role_id int,
@@ -53,7 +52,8 @@ CREATE TABLE IF NOT EXISTS personal_data(
 );
 
 CREATE TABLE IF NOT EXISTS patient(
-   id SERIAL PRIMARY KEY,   
+   id SERIAL PRIMARY KEY,
+   cpr varchar(10) NOT NULL,
    personal_data_id int NOT NULL,
    CONSTRAINT fk_personal_data
       FOREIGN KEY(personal_data_id) 
