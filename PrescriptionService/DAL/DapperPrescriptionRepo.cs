@@ -14,7 +14,7 @@ namespace PrescriptionService.DAL
         public IEnumerable<Prescription> GetPrescriptionsExpiringLatest(DateOnly expiringDate)
         {
             //TODO get connectionstring from settings
-            using (var connection = new NpgsqlConnection("Host=192.168.0.150;Port=15432;Database=prescription_db;Include Error Detail=true;Username=prescription_user;Password=prescription_pw"))
+            using (var connection = new NpgsqlConnection(_connectionsString))
             {
                 Dapper.DefaultTypeMap.MatchNamesWithUnderscores = true;
 
