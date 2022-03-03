@@ -98,9 +98,10 @@ public class DbSeeder
 
         return pharmaceutFaker.Generate(PHARMACEUT_COUNT);
     }
-    private IEnumerable<Patient> CreatePatients(List<Address> add)
+    private List<Patient> CreatePatients(List<Address> add)
     {
         Console.WriteLine("Create Patients");
+        List<Patient> patients = new List<Patient>();
         var perIteration = PATIENT_COUNT / 1000;
         for (int i = 0; i < 1000; i++)
         {
@@ -110,9 +111,9 @@ public class DbSeeder
             .RuleFor(p => p.Cpr, (f, p) => (f.Person.DateOfBirth.ToString("ddMMyy") + f.Random.Number(9).ToString() + f.Random.Number(9).ToString() + f.Random.Number(9).ToString() + f.Random.Number(9).ToString()))
             .RuleFor(p => p.PersonalData, (f, p) => CreatePersonalData("patient", $"{p.Cpr}"));
 
-            yield return patientFaker.Generate(perIteration);
+            patients.AddRange(patientFaker.Generate(perIteration));
         }
-        
+        return patients;
     }
 
     private List<Doctor> CreateDoctors(List<Address> add)
