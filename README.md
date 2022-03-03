@@ -6,6 +6,6 @@ dotnet ef dbcontext scaffold "Host=localhost;Port=25432;Database=practice_databa
 
 
 Endpoints when running docker compose:
-localhost:14080
+localhost:14080/Prescription GET
 localhost:14081/Renewal GET
-localhost:14082
+localhost:14082/api/Email/send POST (Body -> mailrequest)

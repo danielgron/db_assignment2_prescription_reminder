@@ -5,11 +5,11 @@ namespace TestDataApi;
 public class DbSeeder
 {
     
-    const int ADDRESS_COUNT = 30;
-    const int PHARMACY_COUNT = 10;
-    const int DOCTOR_COUNT = 10;
-    const int PATIENT_COUNT = 80;
-    const int PHARMACEUT_COUNT = 10;
+    const int ADDRESS_COUNT = 3000000;
+    const int PHARMACY_COUNT = 1000;
+    const int DOCTOR_COUNT = 100000;
+    const int PATIENT_COUNT = 8000000;
+    const int PHARMACEUT_COUNT = 100000;
     
 
     static Faker<Address> addFaker = new Faker<Address>();
@@ -27,6 +27,7 @@ public class DbSeeder
     public DbSeeder(PrescriptionContext prescriptionContext)
     {
         _prescriptionContext = prescriptionContext;
+        
     }
 
 
@@ -44,12 +45,15 @@ public class DbSeeder
         _prescriptionContext.AddRange(patients);
         _prescriptionContext.AddRange(pharmaceuts);
         _prescriptionContext.AddRange(doctors);
+        Console.WriteLine("Save Changes");
         _prescriptionContext.SaveChanges();
         _prescriptionContext.AddRange(prescriptions);
+        Console.WriteLine("Save Changes");
         _prescriptionContext.SaveChanges();
     }
 
     private List<Address> CreateAddresses(){
+        Console.WriteLine("Create Addresses");
         
 
         addFaker
@@ -58,13 +62,11 @@ public class DbSeeder
         .RuleFor(a => a.Zipcode, (f, a) => f.Address.ZipCode("####"));
 
         return addFaker.Generate(ADDRESS_COUNT);
-
-        _prescriptionContext.AddRange();
     }
 
     private List<Pharmacy> CreatePharmacies(List<Address> add)
     {
-        var addCount = 0;
+        Console.WriteLine("Create Pharmacies");
         pharmacyFaker
         .RuleFor(p => p.Address, (f, p) => add[addCount++])
         .RuleFor(p => p.PharmacyName, (f, p) => f.Company.CompanyName());
@@ -74,6 +76,7 @@ public class DbSeeder
 
     private List<Medicine> CreateMedicines()
     {
+        Console.WriteLine("Create Medicines");
         var med = new List<Medicine>();
 
         med.Add(new Medicine() { Name = "Constaticimol" });
@@ -88,23 +91,33 @@ public class DbSeeder
 
     private List<Pharmaceut> CreatePharmaceuts(List<Address> add)
     {
+        Console.WriteLine("Create Pharmaceuts");
         int count = 0;
         pharmaceutFaker
         .RuleFor(p => p.PersonalData, (f, p) => CreatePersonalData("pharmaceut", $"pharmaceut{count++}"));
 
         return pharmaceutFaker.Generate(PHARMACEUT_COUNT);
     }
-    private List<Patient> CreatePatients(List<Address> add)
+    private IEnumerable<Patient> CreatePatients(List<Address> add)
     {
-        patientFaker
-            .RuleFor(p => p.Cpr, (f, p) => (f.Person.DateOfBirth.ToString("ddMMyy") + "1" + f.Random.Number(9).ToString() + f.Random.Number(9).ToString() + f.Random.Number(9).ToString()))
+        Console.WriteLine("Create Patients");
+        var perIteration = PATIENT_COUNT / 1000;
+        for (int i = 0; i < 1000; i++)
+        {
+            Console.WriteLine($"Created {i*perIteration} patients");
+
+            patientFaker
+            .RuleFor(p => p.Cpr, (f, p) => (f.Person.DateOfBirth.ToString("ddMMyy") + f.Random.Number(9).ToString() + f.Random.Number(9).ToString() + f.Random.Number(9).ToString() + f.Random.Number(9).ToString()))
             .RuleFor(p => p.PersonalData, (f, p) => CreatePersonalData("patient", $"{p.Cpr}"));
 
-        return patientFaker.Generate(PATIENT_COUNT);
+            yield return patientFaker.Generate(perIteration);
+        }
+        
     }
 
     private List<Doctor> CreateDoctors(List<Address> add)
     {
+        Console.WriteLine("Create Doctors");
         int count = 0;
         doctorFaker
         .RuleFor(d => d.PersonalData, (f, d) => CreatePersonalData("doctor", $"doctor{count++}"));
@@ -114,6 +127,7 @@ public class DbSeeder
 
     private List<Prescription> CreatePrescriptions(List<Medicine> meds, List<Doctor> docs, List<Patient> patients)
     {
+        Console.WriteLine("Create Prescriptions");
         var random = new Random();
 
         prescriptionFaker
