@@ -82,7 +82,8 @@ namespace PrescriptionService.DAL
                             INNER JOIN prescriptions.medicine med ON pr.medicine_id = med.id
                         WHERE pr.prescribed_to_cpr like @cpr::varchar
                         
-                    ";
+                    "
+                     ;
 
                 var param = new DynamicParameters();
                 param.Add("@cpr", username);
@@ -102,7 +103,7 @@ namespace PrescriptionService.DAL
             }
         }
 
-        public Prescription MarkPrescriptionWarningSent(long prescriptionId)
+        public bool MarkPrescriptionWarningSent(long prescriptionId)
         {
             Console.WriteLine($"Mark prescription with id {prescriptionId} as warned about expiration");
             using (var connection = new NpgsqlConnection(_connectionsString))
@@ -120,7 +121,8 @@ namespace PrescriptionService.DAL
                 var param = new DynamicParameters();
                 param.Add("@id", prescriptionId);
                 
-                return connection.QuerySingle<Prescription>(query);
+                connection.Query(query);
+                return true;
             }
         }
     }

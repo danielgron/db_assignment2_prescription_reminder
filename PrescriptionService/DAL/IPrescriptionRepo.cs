@@ -4,6 +4,6 @@
     {
         public IEnumerable<Prescription> GetPrescriptionsExpiringLatest(DateOnly expiringDate);
         public IEnumerable<Prescription> GetPrescriptionsForUser(string username, string password);
-        public Prescription MarkPrescriptionWarningSent(long prescriptionId);
+        public bool MarkPrescriptionWarningSent(long prescriptionId);
     }
 }

@@ -34,7 +34,7 @@ public class PrescriptionController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public Prescription Update(long id)
+    public bool Update(long id)
     {
         var result = _prescriptionRepo.MarkPrescriptionWarningSent(id);
         return result;
