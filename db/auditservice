@@ -1,0 +1,171 @@
+CREATE DATABASE prescription_db;
+\connect prescription_db
+
+set pgaudit.role= 'auditor';
+set pgaudit.log = 'read, ddl;'
+
+CREATE TABLE IF NOT EXISTS login_info(
+   id SERIAL PRIMARY KEY,
+   username varchar(64) NOT NULL UNIQUE,
+   password varchar(64) NOT NULL,
+   salt varchar(32) NOT NULL
+);
+
+grant select (password)
+   on database.user
+   to auditor:
+   
+grant update account (username, password)
+   on database.user
+   to auditor;
+   
+grant select, delete
+   on database.user
+   to auditor;
+
+CREATE TABLE IF NOT EXISTS address(
+   id SERIAL PRIMARY KEY,
+   streetname varchar(64) NOT NULL,
+   streetnumber varchar(8) NOT NULL,
+   zipcode varchar(32) NOT NULL
+);
+
+grant update address (streetname, streetnumber, zipcode)
+   on database.user
+   to auditor;
+
+
+CREATE TABLE IF NOT EXISTS pharmacy(
+   id SERIAL PRIMARY KEY,
+   pharmacy_name varchar(64) NOT NULL,
+   address_id int,
+   CONSTRAINT fk_address
+      FOREIGN KEY(address_id) 
+	  REFERENCES address(id)
+);
+
+grant update pharmacy (pharmacy_name, address_id)
+   on database.user
+   to auditor;
+
+CREATE TABLE IF NOT EXISTS user_role(
+   id SERIAL PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS user_permission(
+   id SERIAL PRIMARY KEY
+);
+
+CREATE TABLE IF NOT EXISTS personal_data(
+   id SERIAL PRIMARY KEY,
+   first_name varchar(64) NOT NULL,
+   last_name varchar(64) NOT NULL,
+   email VARCHAR(64),
+   login_id int UNIQUE,
+   role_id int,
+   address_id int,
+   CONSTRAINT fk_address
+      FOREIGN KEY(address_id) 
+	  REFERENCES address(id),
+   CONSTRAINT fk_login
+      FOREIGN KEY(login_id) 
+	  REFERENCES login_info(id),
+   CONSTRAINT fk_role
+      FOREIGN KEY(role_id) 
+	  REFERENCES user_role(id)
+);
+
+grant update personal_data (first_name, last_name, email, login_id , role_id, address_id )
+   on database.user
+   to auditor;
+
+CREATE TABLE IF NOT EXISTS patient(
+   id SERIAL PRIMARY KEY,
+   cpr varchar(10) NOT NULL,
+   personal_data_id int NOT NULL,
+   CONSTRAINT fk_personal_data
+      FOREIGN KEY(personal_data_id) 
+	   REFERENCES personal_data(id)   
+);
+
+grant update patient (cpr,  personal_data_id)
+   on database.user
+   to auditor;
+
+CREATE TABLE IF NOT EXISTS pharmaceut(
+   id SERIAL PRIMARY KEY,
+   pharmacy_id int,
+   personal_data_id int NOT NULL,
+   CONSTRAINT fk_personal_data
+      FOREIGN KEY(personal_data_id) 
+	   REFERENCES personal_data(id),
+   CONSTRAINT fk_pharmacy
+      FOREIGN KEY(pharmacy_id) 
+	   REFERENCES pharmacy(id)
+);
+
+grant update pharmaceut (pharmacy_id,  personal_data_id)
+   on database.user
+   to auditor;
+
+CREATE TABLE IF NOT EXISTS doctor(
+   id SERIAL PRIMARY KEY,
+   personal_data_id int NOT NULL,
+   CONSTRAINT fk_personal_data
+      FOREIGN KEY(personal_data_id) 
+	   REFERENCES personal_data(id)
+);
+
+
+grant update doctor (personal_data_id)
+   on database.user
+   to auditor;
+
+CREATE TABLE IF NOT EXISTS medicine(
+   id SERIAL PRIMARY KEY,
+   name varchar(64) NOT NULL
+);
+
+grant update medicine (name)
+   on database.user
+   to auditor;
+
+CREATE TABLE IF NOT EXISTS prescription(
+   id BIGSERIAL PRIMARY KEY,
+   expiration DATE,
+   expiration_warning_sent boolean,
+   creation TIMESTAMP NOT NULL,
+   medicine_id int NOT NULL,
+   prescribed_by int NOT NULL,
+   prescribed_to int NOT NULL,
+   last_administered_by int,
+   CONSTRAINT fk_medicine
+      FOREIGN KEY(medicine_id) 
+	   REFERENCES medicine(id),
+   CONSTRAINT fk_prescriber
+      FOREIGN KEY(prescribed_by) 
+	   REFERENCES doctor(id),
+   CONSTRAINT fk_prescribee
+      FOREIGN KEY(prescribed_to) 
+	   REFERENCES patient(id),
+   CONSTRAINT fk_administered_by
+      FOREIGN KEY(last_administered_by) 
+	   REFERENCES pharmaceut(id)
+);
+
+grant update prescription (expiration,expiration_warning_sent,creation,medicine_id,prescribed_by, prescribed_to, last_administered_by)
+   on database.user
+   to auditor;
+
+
+CREATE TABLE IF NOT EXISTS user_role_user_permission(
+   role_id int,
+   permission_id int,
+   PRIMARY KEY(role_id, permission_id),
+   CONSTRAINT fk_role
+      FOREIGN KEY(role_id) 
+	   REFERENCES user_role(id),
+   CONSTRAINT fk_permission
+      FOREIGN KEY(permission_id) 
+	   REFERENCES user_permission(id)
+);
