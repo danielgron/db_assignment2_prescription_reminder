@@ -4,8 +4,8 @@ services:
     container_name: 'prescription-database'
     image: postgres:14.2-alpine
     hostname: prescription-database
-    mem_limit: 300m
-    memswap_limit: 1100m
+    mem_limit: 2000m
+    memswap_limit: 6000m
     ports:
       - 15432:5432
     volumes:
@@ -34,8 +34,8 @@ services:
       context: ./RenewalService/RenewalService
       dockerfile: Dockerfile
     hostname: renewal-service
-    mem_limit: 300m
-    memswap_limit: 1100m
+    mem_limit: 500m
+    memswap_limit: 2000m
     ports:
       - 14081:80
     restart: always
@@ -46,8 +46,20 @@ services:
       context: ./Pharmacy-Assignment2/Pharmacy-Assignment2
       dockerfile: Dockerfile
     hostname: notification-service
-    mem_limit: 300m
+    mem_limit: 500m
     memswap_limit: 1100m
     ports:
       - 14082:80
+    restart: always
+
+  test-data-api:
+    container_name: 'test-data-api'
+    build: 
+      context: ./TestDataApi
+      dockerfile: Dockerfile
+    hostname: test-data-api
+    mem_limit: 500m
+    memswap_limit: 2000m
+    ports:
+      - 14083:80
     restart: always

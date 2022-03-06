@@ -25,4 +25,18 @@ public class PrescriptionController : ControllerBase
         var result = _prescriptionRepo.GetPrescriptionsExpiringLatest(DateOnly.FromDateTime(DateTime.Now.AddDays(7))).Select(x => PrescriptionMapper.ToDto(x));
         return result;
     }
+
+    [HttpGet("{username}/{password}")]
+    public IEnumerable<PrescriptionDto> GetForPatient(string username, string password)
+    {
+        var result = _prescriptionRepo.GetPrescriptionsForUser(username, password).Select(x => PrescriptionMapper.ToDto(x));
+        return result;
+    }
+
+    [HttpPut("{id}")]
+    public Prescription Update(long id)
+    {
+        var result = _prescriptionRepo.MarkPrescriptionWarningSent(id);
+        return result;
+    }
 }

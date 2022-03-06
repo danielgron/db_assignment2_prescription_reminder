@@ -11,11 +11,11 @@ namespace PrescriptionService.Util
             dto.Creation = prescription.Creation;
             dto.Expiration = prescription.Expiration;
             dto.Patient = new PatientDto();
-            dto.Patient.FirstName = prescription.PrescribedToNavigation.PersonalDatum.FirstName;
-            dto.Patient.LastName = prescription.PrescribedToNavigation.PersonalDatum.LastName;
-            dto.Patient.Email = prescription.PrescribedToNavigation.PersonalDatum.Email;
+            dto.Patient.FirstName = prescription.PrescribedToNavigation?.PersonalDatum?.FirstName;
+            dto.Patient.LastName = prescription.PrescribedToNavigation?.PersonalDatum?.LastName;
+            dto.Patient.Email = prescription.PrescribedToNavigation?.PersonalDatum?.Email;
             dto.Medicine = new MedicineDto();
-            dto.Medicine.Name = prescription.Medicine.Name;
+            dto.Medicine.Name = prescription.Medicine?.Name;
 
             return dto;
         }

@@ -17,12 +17,20 @@ public class TestDataController : ControllerBase
     }
     
 
-    [HttpGet(Name = "SeedTestData")]
-    public Task Get()
+    [HttpGet("SeedTestData")]
+    public Task Seed()
     {
         
-        new DbSeeder(_pc).SeedTestData(1000000);
-        return null;
+        new DbSeeder(_pc).SeedTestData(1);
+        return Task.CompletedTask;
+    }
+
+    [HttpGet("SeedTestDataReduced")]
+    public Task SeedReduced()
+    {
+        
+        new DbSeeder(_pc).SeedTestData(100);
+        return Task.CompletedTask;
     }
     
 }

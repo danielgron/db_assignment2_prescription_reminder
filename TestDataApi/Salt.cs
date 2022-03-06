@@ -6,7 +6,7 @@ namespace TestDataApi
     {
         public static string Create()
         {
-            byte[] randomBytes = new byte[128 / 8];
+            byte[] randomBytes = new byte[32 / 8];
             using (var generator = RandomNumberGenerator.Create())
             {
                 generator.GetBytes(randomBytes);
