@@ -11,6 +11,7 @@ namespace TestDataApi
             Permissions = new HashSet<UserPermission>();
         }
 
+        public string Name { get; set; } = null!;
         public int Id { get; set; }
 
         public virtual ICollection<PersonalDatum> PersonalData { get; set; }

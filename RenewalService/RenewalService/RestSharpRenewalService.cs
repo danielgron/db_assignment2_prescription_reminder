@@ -27,6 +27,8 @@ namespace RenewalService
 
             var notificationClient = new RestClient(_notificationServiceEndpoint);
 
+            try{
+
             foreach (var prescription in prescriptionResponse)
             {
                 var email = prescription.Patient.Email;
@@ -43,6 +45,10 @@ namespace RenewalService
                 if (!response.IsSuccessful)
                     _logger.LogWarning($"Failed to notify {email}");
 
+            }
+            }
+            catch(Exception ex){
+                _logger.LogError("Error sending email notifications", ex);
             }
         }
     }

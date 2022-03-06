@@ -33,7 +33,7 @@ namespace TestDataApi
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseNpgsql("Host=192.168.0.150;Port=15432;Database=prescription_db;Include Error Detail=true;Username=prescription_user;Password=prescription_pw");
+                optionsBuilder.UseNpgsql("Host=prescription-database;Port=5432;Database=prescription_db;Include Error Detail=true;Username=prescription_user;Password=prescription_pw");
             }
         }
 
@@ -41,7 +41,7 @@ namespace TestDataApi
         {
             modelBuilder.Entity<Address>(entity =>
             {
-                entity.ToTable("address");
+                entity.ToTable("address", "prescriptions");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -60,7 +60,7 @@ namespace TestDataApi
 
             modelBuilder.Entity<Doctor>(entity =>
             {
-                entity.ToTable("doctor");
+                entity.ToTable("doctor", "prescriptions");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -75,7 +75,7 @@ namespace TestDataApi
 
             modelBuilder.Entity<LoginInfo>(entity =>
             {
-                entity.ToTable("login_info");
+                entity.ToTable("login_info", "prescriptions");
 
                 entity.HasIndex(e => e.Username, "login_info_username_key")
                     .IsUnique();
@@ -97,7 +97,7 @@ namespace TestDataApi
 
             modelBuilder.Entity<Medicine>(entity =>
             {
-                entity.ToTable("medicine");
+                entity.ToTable("medicine", "prescriptions");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -108,7 +108,7 @@ namespace TestDataApi
 
             modelBuilder.Entity<Patient>(entity =>
             {
-                entity.ToTable("patient");
+                entity.ToTable("patient", "prescriptions");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -127,7 +127,7 @@ namespace TestDataApi
 
             modelBuilder.Entity<PersonalDatum>(entity =>
             {
-                entity.ToTable("personal_data");
+                entity.ToTable("personal_data", "prescriptions");
 
                 entity.HasIndex(e => e.LoginId, "personal_data_login_id_key")
                     .IsUnique();
@@ -170,7 +170,7 @@ namespace TestDataApi
 
             modelBuilder.Entity<Pharmaceut>(entity =>
             {
-                entity.ToTable("pharmaceut");
+                entity.ToTable("pharmaceut", "prescriptions");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -192,7 +192,7 @@ namespace TestDataApi
 
             modelBuilder.Entity<Pharmacy>(entity =>
             {
-                entity.ToTable("pharmacy");
+                entity.ToTable("pharmacy", "prescriptions");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -210,7 +210,7 @@ namespace TestDataApi
 
             modelBuilder.Entity<Prescription>(entity =>
             {
-                entity.ToTable("prescription");
+                entity.ToTable("prescription", "prescriptions");
 
                 entity.Property(e => e.Id).HasColumnName("id");
 
@@ -220,6 +220,8 @@ namespace TestDataApi
 
                 entity.Property(e => e.Expiration).HasColumnName("expiration");
 
+                entity.Property(e => e.ExpirationWarningSent).HasColumnName("expiration_warning_sent");
+
                 entity.Property(e => e.LastAdministeredBy).HasColumnName("last_administered_by");
 
                 entity.Property(e => e.MedicineId).HasColumnName("medicine_id");
@@ -227,6 +229,10 @@ namespace TestDataApi
                 entity.Property(e => e.PrescribedBy).HasColumnName("prescribed_by");
 
                 entity.Property(e => e.PrescribedTo).HasColumnName("prescribed_to");
+
+                entity.Property(e => e.PrescribedToCpr)
+                    .HasMaxLength(10)
+                    .HasColumnName("prescribed_to_cpr");
 
                 entity.HasOne(d => d.LastAdministeredByNavigation)
                     .WithMany(p => p.Prescriptions)
@@ -254,16 +260,20 @@ namespace TestDataApi
 
             modelBuilder.Entity<UserPermission>(entity =>
             {
-                entity.ToTable("user_permission");
+                entity.ToTable("user_permission", "prescriptions");
 
                 entity.Property(e => e.Id).HasColumnName("id");
             });
 
             modelBuilder.Entity<UserRole>(entity =>
             {
-                entity.ToTable("user_role");
+                entity.ToTable("user_role", "prescriptions");
 
                 entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Name)
+                    .HasMaxLength(32)
+                    .HasColumnName("name");
 
                 entity.HasMany(d => d.Permissions)
                     .WithMany(p => p.Roles)
@@ -275,7 +285,7 @@ namespace TestDataApi
                         {
                             j.HasKey("RoleId", "PermissionId").HasName("user_role_user_permission_pkey");
 
-                            j.ToTable("user_role_user_permission");
+                            j.ToTable("user_role_user_permission", "prescriptions");
 
                             j.IndexerProperty<int>("RoleId").HasColumnName("role_id");
 
